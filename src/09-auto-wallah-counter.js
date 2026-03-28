@@ -88,28 +88,81 @@
  */
 export function findQueueContainer(element) {
   // Your code here
+  if(!element) {
+    return null;
+  }
+
+  return element.closest('.queue-container');
 }
 
 export function getNextInQueue(element) {
   // Your code here
+  if(!element) {
+    return null;
+  }
+
+  return element.nextElementSibling || null;
 }
 
 export function getPreviousInQueue(element) {
   // Your code here
+  if(!element) {
+    return null;
+  }
+
+  return element.previousElementSibling || null;
 }
 
 export function getQueuePosition(element) {
   // Your code here
+  if(!element || !element.parentNode) {
+    return -1;
+  }
+
+  const sibling = Array.from(element.parentNode.children);
+  const index = sibling.indexOf(element);
+
+  return index !== -1 ? index + 1 : -1;
 }
 
 export function moveToFront(element) {
   // Your code here
+  if(!element || !element.parentNode) {
+    return false;
+  }
+
+  const parent = element.parentNode;
+
+  if(element === parent.firstElementChild) {
+    return false;
+  }
+
+  parent.insertBefore(element, parent.firstChild);
+  return true;
 }
 
 export function removeFromQueue(element) {
   // Your code here
+  if(!element || !element.parentNode) {
+    return null;
+  }
+
+  const removedChild = element.parentNode.removeChild(element);
+  return removedChild;
 }
 
 export function getQueueStats(queueContainer) {
   // Your code here
+  if(!queueContainer) {
+    return null;
+  }
+
+  const children = Array.from(queueContainer.children);
+
+  return {
+    total: children.length,
+    waiting: children.filter((child) => child.classList.contains('waiting')).length,
+    serving: children.filter((child) => child.classList.contains('serving')).length,
+    completed: children.filter((child) => child.classList.contains('completed')).length,
+  }
 }

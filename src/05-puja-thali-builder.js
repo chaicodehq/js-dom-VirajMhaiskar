@@ -59,16 +59,103 @@
  */
 export function setupAddButton(button, thaliElement, itemName) {
   // Your code here
+  if (!button || !thaliElement || !itemName) {
+    return null;
+  }
+  const handleClick = () => {
+    const li = document.createElement('li');
+    li.textContent = itemName;
+    thaliElement.appendChild(li);
+  }
+
+  button.addEventListener('click', handleClick);
+
+  return function cleanup() {
+    button.removeEventListener('click', handleClick);
+  }
 }
 
 export function setupRemoveButton(button, thaliElement) {
   // Your code here
+  if(!button || !thaliElement) {
+    return null;
+  }
+
+  const handleClick = () => {
+    const lastChild = thaliElement.lastElementChild;
+
+    if(lastChild) {
+      thaliElement.removeChild(lastChild);
+    }
+  }
+
+  button.addEventListener('click', handleClick);
+
+  return function cleanup() {
+    button.removeEventListener('click', handleClick);
+  }
 }
 
 export function setupToggleItem(button, thaliElement, itemName) {
   // Your code here
+  if (!button || !thaliElement || !itemName) {
+    return null;
+  }
+
+  const handleClick = () => {
+    const existingItems = Array.from(thaliElement.children);
+    const targetItem = existingItems.find((li) => li.textContent === itemName);
+
+    if(targetItem) {
+      thaliElement.removeChild(targetItem);
+    } else {
+      const li = document.createElement('li');
+      li.textContent = itemName;
+      thaliElement.appendChild(li);
+    }
+  }
+
+  button.addEventListener('click', handleClick);
+
+  return function cleanup() {
+    button.removeEventListener('click', handleClick);
+  }
 }
 
 export function createThaliManager(thaliElement, counterElement) {
   // Your code here
+  if(!thaliElement || !counterElement) {
+    return null;
+  }
+
+  return {
+    addItem(name) {
+      const li = document.createElement('li');
+      li.textContent = name;
+      thaliElement.appendChild(li);
+      counterElement.textContent = Array.from(thaliElement.children).length;
+      return li;
+    },
+
+    removeItem(name) {
+      const existingItems = Array.from(thaliElement.children);
+      const targetItem = existingItems.find((li) => li.textContent === name);
+
+      if(targetItem) {
+        thaliElement.removeChild(targetItem);
+        counterElement.textContent = Array.from(thaliElement.children).length;
+        return true;
+      }
+      return false;
+    },
+
+    getCount() {
+      return Array.from(thaliElement.children).length;
+    },
+
+    clear() {
+      thaliElement.replaceChildren();
+      counterElement.textContent = 0;
+    }
+  }
 }
